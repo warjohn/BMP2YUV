@@ -1,0 +1,77 @@
+/*
+void BgrToYuv420p(const uint8_t* bgr, size_t bgrStride, size_t width, size_t height,
+                  uint8_t* y, size_t yStride, uint8_t* u, size_t uStride, uint8_t* v, size_t vStride) {
+    // Проверка входных параметров
+    if (!bgr || !y || !u || !v || width == 0 || height == 0 || bgrStride == 0 || yStride == 0 || uStride == 0 || vStride == 0) {
+        fprintf(stderr, "Invalid input parameters!\n");
+        return;
+    }
+
+    if (bgrStride < width * 3 || yStride < width || uStride < width / 2 || vStride < width / 2) {
+        fprintf(stderr, "Invalid stride values!\n");
+        return;
+    }
+
+    // Приводим ширину и высоту к четным значениям
+    size_t widthDA = width & ~1; // Убедимся, что ширина четная
+    size_t heightDA = height & ~1; // Убедимся, что высота четная
+
+    // Константы для преобразования BGR в YUV
+    __m128 yCoefficients = _mm_set_ps(0.299f, 0.587f, 0.114f, 0.0f); // Коэффициенты для Y
+    __m128 uCoefficients = _mm_set_ps(-0.169f, -0.331f, 0.499f, 0.0f); // Коэффициенты для U
+    __m128 vCoefficients = _mm_set_ps(0.499f, -0.419f, -0.081f, 0.0f); // Коэффициенты для V
+    __m128 offsetU = _mm_set1_ps(128.0f); // Смещение для U
+    __m128 offsetV = _mm_set1_ps(128.0f); // Смещение для V
+
+    for (size_t row = 0; row < heightDA; row += 2) {
+        for (size_t colY = 0; colY < widthDA; colY += 2) {
+            size_t colUV = colY / 2;
+            size_t colBgr = row * bgrStride + colY * 3;
+
+            // Проверяем границы
+            if (colBgr + 15 >= (row + 1) * bgrStride) {
+                fprintf(stderr, "Out of bounds: colBgr=%zu, row=%zu, colY=%zu\n", colBgr, row, colY);
+                return;
+            }
+
+            // Загружаем два пикселя BGR в SIMD-регистры
+            __m128i bgr0 = _mm_cvtepi8_epi16(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&bgr[colBgr])));
+            __m128i bgr1 = _mm_cvtepi8_epi16(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&bgr[colBgr + 6])));
+
+            // Преобразуем данные в формат с плавающей запятой
+            __m128 bgr0f = _mm_cvtepi32_ps(_mm_unpacklo_epi16(bgr0, _mm_setzero_si128()));
+            __m128 bgr1f = _mm_cvtepi32_ps(_mm_unpacklo_epi16(bgr1, _mm_setzero_si128()));
+
+            // Вычисляем Y для обоих пикселей
+            __m128 y0f = _mm_dp_ps(bgr0f, yCoefficients, 0x7F);
+            __m128 y1f = _mm_dp_ps(bgr1f, yCoefficients, 0x7F);
+
+            int y0 = static_cast<int>(_mm_cvtss_f32(y0f));
+            int y1 = static_cast<int>(_mm_cvtss_f32(y1f));
+
+            y[row * yStride + colY] = std::min(255, std::max(0, y0));
+            y[row * yStride + colY + 1] = std::min(255, std::max(0, y1));
+            y[(row + 1) * yStride + colY] = std::min(255, std::max(0, y0));
+            y[(row + 1) * yStride + colY + 1] = std::min(255, std::max(0, y1));
+
+            // Вычисляем U и V для обоих пикселей
+            __m128 uVal0 = _mm_add_ps(_mm_dp_ps(bgr0f, uCoefficients, 0x7F), offsetU);
+            __m128 vVal0 = _mm_add_ps(_mm_dp_ps(bgr0f, vCoefficients, 0x7F), offsetV);
+            __m128 uVal1 = _mm_add_ps(_mm_dp_ps(bgr1f, uCoefficients, 0x7F), offsetU);
+            __m128 vVal1 = _mm_add_ps(_mm_dp_ps(bgr1f, vCoefficients, 0x7F), offsetV);
+
+            float u0 = _mm_cvtss_f32(uVal0);
+            float v0 = _mm_cvtss_f32(vVal0);
+            float u1 = _mm_cvtss_f32(uVal1);
+            float v1 = _mm_cvtss_f32(vVal1);
+
+            // Усредняем U и V для обоих пикселей
+            float avgU = (u0 + u1) / 2.0f;
+            float avgV = (v0 + v1) / 2.0f;
+
+            u[row / 2 * uStride + colUV] = static_cast<uint8_t>(std::min(255.0f, std::max(0.0f, avgU)));
+            v[row / 2 * vStride + colUV] = static_cast<uint8_t>(std::min(255.0f, std::max(0.0f, avgV)));
+        }
+    }
+}
+*/
