@@ -3,8 +3,8 @@
 #include <stdexcept>
 
 int main(int argc, char** argv) {
-    if (argc != 3) {
-        throw std::invalid_argument("Необходимо указать 2 аргумента. 1 - Путь до файла изображения; 2 - Путь до файла видео");
+    if (argc != 5) {
+        throw std::invalid_argument("Необходимо указать 4 аргумента. 1 - Путь до файла изображения; 2 - Путь до файла видео; 3 - Video width; 4 - Video height");
     }
     const std::string inputBMP = argv[1];  // Путь к BMP изображению
     const std::string video = argv[2];
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    std::cout << width << " - " << height << std::endl;
+    std::cout << "Image shape - " << width << "x" << height << std::endl;
 
     size_t ySize = width * height;
     size_t uvSize = (width / 2) * (height / 2);
@@ -34,8 +34,8 @@ int main(int argc, char** argv) {
     converter.ConvertBGRToYUV420P(pixelData, width, height, yBuffer, uBuffer, vBuffer);
     converter.InvertYUVVertically(yBuffer, uBuffer, vBuffer, width, height);
 
-    const int VideoWidth = 352;  // Узнал из просмоторщика vooya 
-    const int VideoHeight = 288;
+    const int VideoWidth = std::atoi(argv[3]);  // Узнал из просмоторщика vooya 352x288 - тестовое видео
+    const int VideoHeight = std::atoi(argv[4]);
 
     processor.ProcessVideo(video, outputYUVVideo, VideoWidth, VideoHeight, yBuffer, uBuffer, vBuffer, width, height);
 
