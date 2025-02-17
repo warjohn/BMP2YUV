@@ -44,10 +44,10 @@ public:
                  const std::vector<uint8_t>& vBuffer, int width, int height);
 
 private:
-    void BgrToY(const uint8_t* bgr, size_t bgrStride, size_t width, size_t height,
-                uint8_t* y, size_t yStride);
-    void BgrToUV(const uint8_t* bgr, size_t bgrStride, size_t width, size_t height,
-                 uint8_t* u, size_t uStride, uint8_t* v, size_t vStride);
+    void BgrToY(const uint8_t* bgr, size_t bgrStride, size_t startRow, size_t endRow, size_t width,
+        uint8_t* y, size_t yStride);
+    void BgrToUV(const uint8_t* bgr, size_t bgrStride, size_t startRow, size_t endRow, size_t width, size_t height,
+        uint8_t* u, size_t uStride, uint8_t* v, size_t vStride);
     void BgrToYuv420pParallel(const uint8_t* bgr, size_t bgrStride, size_t width, size_t height,
                               uint8_t* y, size_t yStride, uint8_t* u, size_t uStride, uint8_t* v, size_t vStride);
 };
