@@ -7,7 +7,6 @@
 #include <stdexcept>
 
 int main(int argc, char** argv) {
-    // if I can use C++23 - I'll use switch-case constructions ((
     if (argc < 5) {
         throw std::invalid_argument("Необходимо указать как минимум 4 аргумента: <путь_изображения> <путь_видео> <ширина_видео> <высота_видео>");
     } 
