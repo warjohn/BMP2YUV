@@ -29,8 +29,7 @@ The code is structured using Object-Oriented Programming (OOP) principles, ensur
 - **BMP to YUV Conversion**: Converts 24-bit BMP images into YUV420P format.
 - **Parallel Processing**: Utilizes multi-threading for efficient conversion of Y, U, and V channels.
 - **Video Overlay**: Inserts a YUV overlay into a video stream.
-- **Vertical Inversion**: Inverts the YUV data vertically for correct orientation.
-- **Modular Design**: Divided into reusable classes (`BMPToYUVConverter` and `VideoProcessor`) for better organization.
+- **Modular Design**: Divided into reusable classes (`BMPToYUVConverter`, `BMPreader`, `SaveYUV`, `VideoYUV`) for better organization and abstract classes (`ConvertAnyFormat2YUV`, `ImageReader`, `SaveImage`, `VideoProcessor`)
 
 ---
 
